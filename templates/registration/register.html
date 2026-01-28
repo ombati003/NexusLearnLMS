@@ -1,0 +1,118 @@
+{% extends 'registration/registration_base.html' %}
+
+{% block title %}Register | Learning management system{% endblock title %}
+
+{% block content %}
+
+<div class="container py-5">
+	
+  <div class="blue-gradient text-light p-3 mb-5">
+	  <h1 class="lead my-0">
+		<i class="fas fa-lock ms-2"></i> Create Your Account
+	  </h1>
+  </div>
+
+  <form action="" method="POST" id="login-form">
+	  {% csrf_token %}
+	  <div class="row">
+		  <div class="col-lg-6">
+			<h1 class="lead p-2 bg-light">Login Form</h1>
+			<div class="mb-3">
+				<label for="username_id" class="form-label">Username</label>
+				<input type="text" name="username" id="username_id" class="form-control" required>
+				<div id="message-wrapper"></div>
+			</div>
+			<div class="mb-3">
+				<label for="email_id" class="form-label">Email</label>
+				<input type="email" name="email" id="email_id" class="form-control" required>
+			</div>
+			<div class="mb-3">
+				<label for="password1_id" class="form-label">Password</label>
+				<input type="password" name="password1" id="password1_id" class="form-control" required>
+			</div>
+			<div class="mb-3">
+				<label for="password2_id" class="form-label">Confirm Password</label>
+				<input type="password" name="password2" id="password2_id" class="form-control" required>
+			</div>
+		  </div>
+		  <div class="col-lg-6">
+			<h1 class="lead p-2 bg-light">Personal Info</h1>
+			<div class="mb-3">
+				<label for="address_id" class="form-label">Address</label>
+				<input type="text" name="address" id="address_id" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label for="phone_id" class="form-label">Phone</label>
+				<input type="text" name="phone" id="phone_id" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label for="first_name_id" class="form-label">First Name</label>
+				<input type="text" name="first_name" id="first_name_id" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label for="last_name_id" class="form-label">Last Name</label>
+				<input type="text" name="last_name" id="last_name_id" class="form-control">
+			</div>
+			<div class="mb-3">
+				<label for="gender_id" class="form-label">Gender</label>
+				<select name="gender" id="gender_id" class="form-select">
+					<option value="">Select Gender</option>
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+					<option value="other">Other</option>
+				</select>
+			</div>
+            <select name="level" id="level_id" class="form-select" required>
+                <option value="">Select Level</option>
+                {% for lvl in levels %}
+                    <option value="{{ lvl.id }}">{{ lvl.name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="program" id="program_id" class="form-select" required>
+                <option value="">Select Program</option>
+                {% for prog in programs %}
+                    <option value="{{ prog.id }}">{{ prog.name }}</option>
+                {% endfor %}
+            </select>
+		  </div>
+	  </div>
+
+
+    <button type="submit" class="btn btn-primary" id="login-btn">
+      <i class="fas fa-sign-in-alt"></i><small> SIGN UP </small>
+    </button>
+  </form>
+  <br>
+  <span> Already Registered? </span><a href="{% url 'login' %}" class="link">Login</a>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  const loginFormEl = document.getElementById('login-form');
+  const loginBtnEl = document.getElementById('login-btn');
+
+  loginFormEl.addEventListener('submit', () => {
+    loginBtnEl.innerHTML = '<i class="fas fa-sign-in-alt"></i> Signing you in . . .';
+    loginBtnEl.classList.add("disabled");
+  });
+
+  $("#username_id").on("input", function () {
+    let username = $(this).val();
+
+    $.ajax({
+      url: "/accounts/ajax/validate-username/",
+      data: { username: username },
+      dataType: 'json',
+      success: function (data) {
+        if (data.is_taken) {
+          $('#message-wrapper').html(`<p class="my-2 text-danger"><span class="bg-error p-2"><b>${username}</b> already taken :( try another one </span></p>`);
+        } else {
+          $('#message-wrapper').html(`<p class="my-2 text-success"><span class="bg-correct p-2"><b>${username}</b> is valid </span></p>`);
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

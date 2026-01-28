@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NexusLearn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>NexusLearn</h2>
+            <span class="badge">Student</span>
+        </div>
+
+        <nav class="menu">
+            <a class="active">
+                <span class="icon">🏠</span> Home
+            </a>
+            <a><span class="icon">👤</span> Profile</a>
+            <a><span class="icon">📘</span> My Courses</a>
+            <a><span class="icon">📊</span> Quiz Progress</a>
+            <a><span class="icon">🧾</span> Grade Results</a>
+            <a><span class="icon">📝</span> Assessment Results</a>
+            <a><span class="icon">➕</span> Add & Drop Course</a>
+            <a><span class="icon">🎥</span> Join Session</a>
+
+            <hr>
+
+            <a><span class="icon">⚙️</span> Account Setting</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="menu-btn">☰</button>
+
+            <input
+                class="search"
+                placeholder="Search All... #course, #program, #quiz, #news, #events"
+            >
+
+            <button class="search-btn">🔍</button>
+            <div class="profile">👤</div>
+        </header>
+
+        <!-- CONTENT -->
+        <section class="content">
+            <p class="breadcrumb">Home</p>
+            <h2>News & Events</h2>
+
+            <div class="empty">
+                <div class="folder">📂</div>
+                <p>School news and events will appear here.</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- CHAT BUTTON -->
+<button class="chat-btn">💬</button>
+
+<script src="app.js"></script>
+</body>
+</html>

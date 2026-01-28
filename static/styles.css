@@ -1,0 +1,135 @@
+/* =========================
+   SIDEBAR (TEMPLATE-SPECIFIC)
+   Built on existing styles.css
+========================= */
+
+/* Sidebar container */
+.sidebar {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* =========================
+   SIDEBAR TOP
+========================= */
+.sidebar-top {
+    padding: 20px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: none;
+    background: #f0f2f5;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #333;
+}
+
+.sidebar-close:hover {
+    background: #e5e7eb;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.role-badge {
+    background: #e8f0ff;
+    color: #1e6fff;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+/* =========================
+   MENU
+========================= */
+.sidebar-menu {
+    padding: 20px 10px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    transition: background 0.2s ease, color 0.2s ease;
+    font-size: 14px;
+}
+
+.sidebar-menu a i {
+    width: 18px;
+    text-align: center;
+    color: #555;
+}
+
+/* Hover */
+.sidebar-menu a:hover {
+    background: #f0f2f5;
+}
+
+/* Active link */
+.sidebar-menu a.active {
+    background: #1e6fff;
+    color: #ffffff;
+}
+
+.sidebar-menu a.active i {
+    color: #ffffff;
+}
+
+/* Section label */
+.menu-section {
+    margin: 16px 12px 8px;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.sidebar-footer {
+    padding: 14px 16px;
+    font-size: 12px;
+    color: #777;
+    border-top: 1px solid #eee;
+}
+
+.sidebar-footer a {
+    color: #1e6fff;
+    text-decoration: none;
+}
+
+.sidebar-footer a:hover {
+    text-decoration: underline;
+}
+
+/* =========================
+   MOBILE BEHAVIOR
+========================= */
+.sidebar.hidden {
+    display: none;
+}

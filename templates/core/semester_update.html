@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Learning management system{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'semester_list' %}">Semester List</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Semester Form</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card pb-3">
+            <p class="form-title">Semester Add & Update Form</p>
+            <div class="container"><br>
+                <form action="" method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="semester_id" class="form-label">Semester</label>
+                        <input type="text" name="semester" id="semester_id" class="form-control"
+                               value="{{ semester.semester }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="session_id" class="form-label">Session</label>
+                        <input type="text" name="session" id="session_id" class="form-control"
+                               value="{{ semester.session }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="next_semester_begins_id" class="form-label">Next Semester Begins</label>
+                        <input type="date" name="next_semester_begins" id="next_semester_begins_id"
+                               class="form-control" value="{{ semester.next_semester_begins|date:'Y-m-d' }}" required>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="is_current_semester" id="current_semester_id"
+                               class="form-check-input" {% if semester.is_current_semester %}checked{% endif %}>
+                        <label for="current_semester_id" class="form-check-label">Set as Current Semester</label>
+                    </div>
+
+                    <input class="btn btn-primary" type="submit" value="Save">
+                    <a class="btn btn-secondary" href="{% url 'semester_list' %}" style="float: right;">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

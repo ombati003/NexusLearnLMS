@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Learning management system{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Post form</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <p class="form-title">Post Form</p>
+            <div class="card-body">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="title_id" class="form-label">Title</label>
+                        <input type="text" name="title" id="title_id" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="summary_id" class="form-label">Summary</label>
+                        <textarea name="summary" id="summary_id" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="posted_as_id" class="form-label">Posted As</label>
+                        <select name="posted_as" id="posted_as_id" class="form-select" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="News">News</option>
+                            <option value="Events">Events</option>
+                        </select>
+                    </div>
+
+                    <input class="btn btn-primary" type="submit" value="Save">
+                    <a class="btn btn-secondary" href="{% url 'home' %}" style="float: right;">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

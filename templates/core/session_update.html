@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Learning management system{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'session_list' %}">Session List</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Session Form</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card pb-3">
+            <p class="form-title">Session Add & Update Form</p>
+            <div class="container"><br>
+                <form action="" method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="name_id" class="form-label">Session Name</label>
+                        <input type="text" name="name" id="name_id" class="form-control" 
+                               value="{{ session.name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="start_date_id" class="form-label">Start Date</label>
+                        <input type="date" name="start_date" id="start_date_id" class="form-control" 
+                               value="{{ session.start_date|date:'Y-m-d' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="end_date_id" class="form-label">End Date</label>
+                        <input type="date" name="end_date" id="end_date_id" class="form-control" 
+                               value="{{ session.end_date|date:'Y-m-d' }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status_id" class="form-label">Status</label>
+                        <select name="status" id="status_id" class="form-select" required>
+                            <option value="Active" {% if session.status == "Active" %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if session.status == "Inactive" %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+
+                    <input class="btn btn-primary" type="submit" value="Save">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,161 @@
+{% load static %}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'navbar.css'}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<div id="top-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Sidebar Toggle -->
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <!-- Search -->
+        <form class="form-header" action="{% url 'query' %}" method="GET">
+            <input
+                id="primary-search"
+                type="text"
+                name="q"
+                value="{{ request.GET.q }}"
+                placeholder="Search All... #course, #program, #Quiz, #News, #Events"
+                required
+            />
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+            <div class="avatar" onclick="toggleDropdown()">
+                <img src="{{ request.user.picture.url }}" alt="User">
+            </div>
+
+            <div class="dropdown-menu" id="userMenu">
+                <div class="dropdown-header">
+                    <div class="avatar large">
+                        <img src="{{ request.user.picture.url }}">
+                    </div>
+                    <p class="last-login">
+                        Last login: {{ request.user.last_login|date }}
+                    </p>
+                </div>
+
+                <hr>
+
+                {% if request.user.is_lecturer or request.user.is_student %}
+                <a href="{% url 'user_course_list' %}">
+                    <i class="fas fa-book"></i> My Courses
+                </a>
+                {% endif %}
+
+                {% if request.user.is_superuser %}
+                <a href="{% url 'admin_panel' %}">
+                    <i class="fas fa-user-tie"></i> Admin Panel
+                </a>
+                {% endif %}
+
+                <a href="{% url 'profile' %}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+
+                <a href="{% url 'edit_profile' %}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+
+                <hr>
+
+                <a class="logout-btn" href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Sign out
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<div id="top-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Sidebar Toggle -->
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <!-- Search -->
+        <form class="form-header" action="{% url 'query' %}" method="GET">
+            <input
+                id="primary-search"
+                type="text"
+                name="q"
+                value="{{ request.GET.q }}"
+                placeholder="Search All... #course, #program, #Quiz, #News, #Events"
+                required
+            />
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <!-- User Dropdown -->
+        <div class="user-dropdown">
+            <div class="avatar" onclick="toggleDropdown()">
+                <img src="{{ request.user.picture.url }}" alt="User">
+            </div>
+
+            <div class="dropdown-menu" id="userMenu">
+                <div class="dropdown-header">
+                    <div class="avatar large">
+                        <img src="{{ request.user.picture.url }}">
+                    </div>
+                    <p class="last-login">
+                        Last login: {{ request.user.last_login|date }}
+                    </p>
+                </div>
+
+                <hr>
+
+                {% if request.user.is_lecturer or request.user.is_student %}
+                <a href="{% url 'user_course_list' %}">
+                    <i class="fas fa-book"></i> My Courses
+                </a>
+                {% endif %}
+
+                {% if request.user.is_superuser %}
+                <a href="{% url 'admin_panel' %}">
+                    <i class="fas fa-user-tie"></i> Admin Panel
+                </a>
+                {% endif %}
+
+                <a href="{% url 'profile' %}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+
+                <a href="{% url 'edit_profile' %}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+
+                <hr>
+
+                <a class="logout-btn" href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Sign out
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+function toggleDropdown() {
+    document.getElementById("userMenu").classList.toggle("show");
+}
+
+window.onclick = function(e) {
+    if (!e.target.closest(".user-dropdown")) {
+        document.getElementById("userMenu").classList.remove("show");
+    }
+}
+</script>

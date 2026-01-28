@@ -1,0 +1,87 @@
+{% load static %}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+
+<aside id="side-nav" class="sidebar">
+
+    <!-- TOP -->
+    <div class="sidebar-top" style="background-image: url({% static 'img/dotted.jpg' %});">
+        <button class="sidebar-close" onclick="toggleSidebar()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <h1 class="logo-text">NexusLearn</h1>
+
+        <span class="role-badge">
+            {{ request.user.get_user_role }}
+        </span>
+    </div>
+
+    <!-- MENU -->
+    <nav class="sidebar-menu">
+
+        <a href="{{ hom }}" class="{% if request.path == hom %}active{% endif %}">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+
+        <a href="{{ prof }}" class="{% if request.path == prof %}active{% endif %}">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+
+        <a href="{{ ucl }}" class="{% if request.path == ucl %}active{% endif %}">
+            <i class="fa-solid fa-book"></i>
+            My Courses
+        </a>
+
+        <a href="{{ qpr }}" class="{% if request.path == qpr %}active{% endif %}">
+            <i class="fa-solid fa-chart-line"></i>
+            Quiz Progress
+        </a>
+
+        <a href="{{ vr }}" class="{% if request.path == vr %}active{% endif %}">
+            <i class="fa-solid fa-file-lines"></i>
+            Grade Results
+        </a>
+
+        <a href="{{ ar }}" class="{% if request.path == ar %}active{% endif %}">
+            <i class="fa-solid fa-pen-to-square"></i>
+            Assessment Results
+        </a>
+
+        <a href="{{ cr }}" class="{% if request.path == cr %}active{% endif %}">
+            <i class="fa-solid fa-circle-plus"></i>
+            Add & Drop Course
+        </a>
+
+        <a href="{{ pro }}">
+            <i class="fa-solid fa-video"></i>
+            Join Session
+        </a>
+
+        <div class="menu-section">Others</div>
+
+        <a href="{{ ep }}">
+            <i class="fa-solid fa-gear"></i>
+            Account Settings
+        </a>
+
+        <a href="{{ cp }}">
+            <i class="fa-solid fa-key"></i>
+            Change Password
+        </a>
+
+    </nav>
+
+    <!-- FOOTER -->
+    <footer class="sidebar-footer">
+        <p>
+            Read our <a href="#">Privacy</a> and <a href="#">Terms</a><br>
+            NexusLearn © <script>document.write(new Date().getFullYear());</script>
+        </p>
+    </footer>
+
+</aside>

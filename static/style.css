@@ -1,0 +1,155 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+}
+
+body {
+    background: #f5f6f8;
+}
+
+/* Layout */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+}
+
+.logo h2 {
+    font-weight: 600;
+}
+
+.badge {
+    background: #e8f0ff;
+    color: #1e6fff;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.menu {
+    margin-top: 30px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    color: #333;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.menu a:hover {
+    background: #f0f2f5;
+}
+
+.menu a.active {
+    background: #1e6fff;
+    color: white;
+}
+
+.menu hr {
+    margin: 15px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+    background: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.menu-btn,
+.search-btn {
+    border: none;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.search {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.profile {
+    width: 36px;
+    height: 36px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Content */
+.content {
+    padding: 30px;
+}
+
+.breadcrumb {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.content h2 {
+    margin-bottom: 40px;
+}
+
+/* Empty state */
+.empty {
+    text-align: center;
+    margin-top: 80px;
+    color: #777;
+}
+
+.folder {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* Chat button */
+.chat-btn {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #1e6fff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0,0,0,.2);
+}
+
+.sidebar.hidden {
+    display: none;
+}
