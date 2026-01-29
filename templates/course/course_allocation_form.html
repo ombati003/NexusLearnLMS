@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Learning management system{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'course_allocation_view' %}">Course Allocations</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Allocation Form</li>
+    </ol>
+</nav>
+
+{% include 'snippets/messages.html' %}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <p class="form-title">Course Allocation Form</p>
+            <div class="p-3">
+                <form action="" method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="lecturer_id" class="form-label">Lecturer</label>
+                        <select name="lecturer" id="lecturer_id" class="form-select" required>
+                            <option value="">-- Select Lecturer --</option>
+                            {% for lecturer in lecturers %}
+                                <option value="{{ lecturer.id }}" {% if allocation.lecturer.id == lecturer.id %}selected{% endif %}>
+                                    {{ lecturer.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="courses_id" class="form-label">Courses</label>
+                        <select name="courses" id="courses_id" class="form-select" multiple required>
+                            {% for course in courses %}
+                                <option value="{{ course.id }}" {% if course.id in allocation_courses %}selected{% endif %}>
+                                    {{ course.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">Hold down Ctrl (Windows) or Command (Mac) to select multiple courses.</small>
+                    </div>
+
+                    <input class="btn btn-outline-primary" type="submit" value="Save">
+                    <a class="btn btn-secondary" href="{% url 'course_allocation_view' %}" style="float: right;">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
