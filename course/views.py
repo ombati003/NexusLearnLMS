@@ -6,9 +6,7 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import CreateView
 from django_filters.views import FilterView
-
 from accounts.decorators import lecturer_required, student_required
 from accounts.models import Student, User
 from core.models import Semester
@@ -305,23 +303,28 @@ def deallocate_course(request, pk):
 @login_required
 @lecturer_required
 def handle_file_upload(request, slug):
+    # Ensure the course exists
     course = get_object_or_404(Course, slug=slug)
+
     if request.method == "POST":
-        form = UploadFormFile(request.POST, request.FILES)
-        if form.is_valid():
-            upload = form.save(commit=False)
-            upload.course = course
-            upload.save()
-            messages.success(request, f"{upload.title} has been uploaded.")
-            return redirect("course_detail", slug=slug)
-        messages.error(request, "Correct the error(s) below.")
-    else:
-        form = UploadFormFile()
-    return render(
-        request,
-        "upload/upload_file_form.html",
-        {"title": "File Upload", "form": form, "course": course},
-    )
+        title = request.POST.get("title")
+        uploaded_file = request.FILES.get("file")
+
+        if not title or not uploaded_file:
+            messages.error(request, "Both title and file are required.")
+        else:
+            upload = Upload.objects.create(
+                title=title,
+                course=course,
+                file=uploaded_file,
+            )
+            messages.success(request, f"File '{upload.title}' uploaded successfully!")
+            return redirect("course_detail", slug=course.slug)
+
+    return render(request, "upload/upload_file_form.html", {
+        "title": "File Upload",
+        "course": course,
+    })
 
 
 @login_required
@@ -329,19 +332,29 @@ def handle_file_upload(request, slug):
 def handle_file_edit(request, slug, file_id):
     course = get_object_or_404(Course, slug=slug)
     upload = get_object_or_404(Upload, pk=file_id)
+
     if request.method == "POST":
-        form = UploadFormFile(request.POST, request.FILES, instance=upload)
-        if form.is_valid():
-            upload = form.save()
+        title = request.POST.get("title")
+        uploaded_file = request.FILES.get("file")
+
+        if not title:
+            messages.error(request, "Title is required.")
+        else:
+            upload.title = title
+            if uploaded_file:
+                upload.file = uploaded_file
+            upload.save()
             messages.success(request, f"{upload.title} has been updated.")
             return redirect("course_detail", slug=slug)
-        messages.error(request, "Correct the error(s) below.")
-    else:
-        form = UploadFormFile(instance=upload)
+
     return render(
         request,
         "upload/upload_file_form.html",
-        {"title": "Edit File", "form": form, "course": course},
+        {
+            "title": "Edit File",
+            "course": course,
+            "upload": upload,
+        },
     )
 
 
@@ -364,22 +377,31 @@ def handle_file_delete(request, slug, file_id):
 @lecturer_required
 def handle_video_upload(request, slug):
     course = get_object_or_404(Course, slug=slug)
+
     if request.method == "POST":
-        form = UploadFormVideo(request.POST, request.FILES)
-        if form.is_valid():
-            video = form.save(commit=False)
-            video.course = course
-            video.save()
-            messages.success(request, f"{video.title} has been uploaded.")
-            return redirect("course_detail", slug=slug)
-        messages.error(request, "Correct the error(s) below.")
-    else:
-        form = UploadFormVideo()
+        title = request.POST.get("title")
+        uploaded_file = request.FILES.get("file")
+
+        if not title or not uploaded_file:
+            messages.error(request, "Both title and video file are required.")
+        else:
+            upload = UploadVideo.objects.create(
+                course=course,
+                title=title,
+                file=uploaded_file,
+            )
+            messages.success(request, f"Video '{upload.title}' uploaded successfully!")
+            return redirect("course_detail", slug=course.slug)
+
     return render(
         request,
-        "upload/upload_video_form.html",
-        {"title": "Video Upload", "form": form, "course": course},
+        "upload/upload_video_form.html",  # template path
+        {
+            "title": "Video Upload",
+            "course": course,
+        },
     )
+
 
 
 @login_required
@@ -398,20 +420,35 @@ def handle_video_single(request, slug, video_slug):
 def handle_video_edit(request, slug, video_slug):
     course = get_object_or_404(Course, slug=slug)
     video = get_object_or_404(UploadVideo, slug=video_slug)
+
     if request.method == "POST":
-        form = UploadFormVideo(request.POST, request.FILES, instance=video)
-        if form.is_valid():
-            video = form.save()
+        title = request.POST.get("title")
+        uploaded_file = request.FILES.get("file")
+        summary = request.POST.get("summary")
+
+        if not title:
+            messages.error(request, "Title is required.")
+        else:
+            video.title = title
+            if uploaded_file:
+                video.video = uploaded_file
+            if summary is not None:
+                video.summary = summary
+            video.save()
             messages.success(request, f"{video.title} has been updated.")
             return redirect("course_detail", slug=slug)
-        messages.error(request, "Correct the error(s) below.")
-    else:
-        form = UploadFormVideo(instance=video)
+
     return render(
         request,
         "upload/upload_video_form.html",
-        {"title": "Edit Video", "form": form, "course": course},
+        {
+            "title": "Edit Video",
+            "course": course,
+            "video": video,
+        },
     )
+
+
 
 
 @login_required

@@ -1,6 +1,3 @@
-
-]
-
 from django.urls import path, include
 
 # from django.contrib.auth.views import (
@@ -11,8 +8,9 @@ from django.urls import path, include
 #     LoginView,
 #     LogoutView,
 # )
-from .views import (
-    home, lec, stud, sidebar, navbar
+from . views import *
+""" from .views import (
+    home, lec, stud, sidebar, navbar,
     profile,
     profile_single,
     admin_panel,
@@ -31,18 +29,17 @@ from .views import (
     register,
     render_lecturer_pdf_list,  # new
     render_student_pdf_list,  # new
-)
+)  """
 
 # from .forms import EmailValidationOnForgotPassword
 
-
-urlpatterns = [
-    path("/hm", home, name="home"),
+"""" path("/hm", home, name="home"),
     path("lec", lec, name="lec"),
     path("stud", stud, name="stud"),
     path("sidebar", sidebar, name="sidebar"),
-    path("navbar", navbar, name="navbar"),
+    path("navbar", navbar, name="navbar"), """
 
+urlpatterns = [
 
     path("", include("django.contrib.auth.urls")),
     path("admin_panel/", admin_panel, name="admin_panel"),

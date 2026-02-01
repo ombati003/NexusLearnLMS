@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Quiz Marking List | Learning management system {% endblock %}
+
+{% block content %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Quiz Marking List</li>
+    </ol>
+</nav>
+
+<div class="title-1 mb-3">Completed Quiz Sittings</div>
+
+<!-- Filter form -->
+<form method="get" class="row mb-4">
+    <div class="col-md-4">
+        <input type="text" name="quiz_filter" value="{{ request.GET.quiz_filter }}" 
+               class="form-control" placeholder="Filter by quiz title">
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="user_filter" value="{{ request.GET.user_filter }}" 
+               class="form-control" placeholder="Filter by username">
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+    </div>
+</form>
+
+{% if object_list %}
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Quiz Title</th>
+                <th>User</th>
+                <th>Score</th>
+                <th>Completed At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sitting in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ sitting.quiz.title }}</td>
+                <td>{{ sitting.user.username }}</td>
+                <td>{{ sitting.current_score }}/{{ sitting.get_max_score }}</td>
+                <td>{{ sitting.end_time|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<h4 class="text-center mt-5 py-5 text-muted">
+    <i class="fa-regular fa-folder-open me-2"></i> No completed sittings found.
+</h4>
+{% endif %}
+
+{% endblock %}

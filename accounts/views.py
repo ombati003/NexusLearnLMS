@@ -17,7 +17,7 @@ from core.models import Semester, Session
 from course.models import Course
 from result.models import TakenCourse
 
-from .models import Level, Program 
+from .models import LEVEL, Program 
 from django.contrib.auth import login
 
 # ########################################################
@@ -222,6 +222,42 @@ def admin_panel(request):
 # ########################################################
 # Settings Views
 # ########################################################
+
+@login_required
+def profile_update(request):
+    if request.method == "POST":
+        user = request.user
+
+        # Collect data manually from POST
+        email = request.POST.get("email")
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        gender = request.POST.get("gender")
+        phone = request.POST.get("phone")
+        address = request.POST.get("address")
+        picture = request.FILES.get("picture")
+
+        # Basic validation (you can extend this)
+        if not email:
+            messages.error(request, "Email is required.")
+        else:
+            # Update user fields manually
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.gender = gender
+            user.phone = phone
+            user.address = address
+
+            if picture:
+                user.picture = picture
+
+            user.save()
+            messages.success(request, "Your profile has been updated successfully.")
+            return redirect("profile")
+
+    return render(request, "setting/profile_info_change.html")
+
 
 
 @login_required
