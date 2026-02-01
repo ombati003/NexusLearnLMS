@@ -49,19 +49,24 @@ def validate_username(request):
 
 def register(request):
     if request.method == "POST":
+        # ---------- AUTH FIELDS ----------
         username = request.POST.get("username")
         email = request.POST.get("email")
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
-        address = request.POST.get("address")
-        phone = request.POST.get("phone")
+
+        # ---------- PERSONAL INFO ----------
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         gender = request.POST.get("gender")
-        level_id = request.POST.get("level")
+        phone = request.POST.get("phone")
+        address = request.POST.get("address")
+
+        # ---------- STUDENT INFO ----------
+        level = request.POST.get("level")      # STRING (Certificate/Diploma)
         program_id = request.POST.get("program")
 
-        # Basic validation
+        # ---------- VALIDATION ----------
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
             return redirect("register")
@@ -74,47 +79,42 @@ def register(request):
             messages.error(request, "Email already registered.")
             return redirect("register")
 
-        # Create user
+        if not level or not program_id:
+            messages.error(request, "Level and Program are required.")
+            return redirect("register")
+
+        # ---------- CREATE USER ----------
         user = User.objects.create_user(
             username=username,
             email=email,
             password=password1,
             first_name=first_name,
             last_name=last_name,
+            gender=gender,
+            phone=phone,
+            address=address,
+            is_student=True,
         )
 
-        # Save extra profile info (assuming you have a Profile model)
-        # Example:
-        user.profile.address = address
-        user.profile.phone = phone
-        user.profile.gender = gender
+        # ---------- CREATE STUDENT ----------
+        Student.objects.create(
+            student=user,
+            level=level,            # saved directly (CharField)
+            program_id=program_id,  # FK shortcut
+        )
 
-        # Foreign key relations
-        if level_id:
-            try:
-                user.profile.level = Level.objects.get(pk=level_id)
-            except Level.DoesNotExist:
-                pass
-
-        if program_id:
-            try:
-                user.profile.program = Program.objects.get(pk=program_id)
-            except Program.DoesNotExist:
-                pass
-
-        user.profile.save()
-
+        # ---------- LOGIN ----------
         login(request, user)
         messages.success(request, "Account created successfully!")
         return redirect("home")
 
-    # GET request → fetch options for dropdowns
-    levels = Level.objects.all()
-    programs = Program.objects.all()
-    return render(request, "registration/register.html", {
-        "levels": levels,
-        "programs": programs,
-    })
+    # ---------- GET REQUEST ----------
+    context = {
+        "levels": LEVEL,                      # choices tuple
+        "programs": Program.objects.all(),    # model queryset
+    }
+    return render(request, "registration/register.html", context)
+
 
 
 # ########################################################
@@ -223,45 +223,9 @@ def admin_panel(request):
 # Settings Views
 # ########################################################
 
+
 @login_required
 def profile_update(request):
-    if request.method == "POST":
-        user = request.user
-
-        # Collect data manually from POST
-        email = request.POST.get("email")
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        gender = request.POST.get("gender")
-        phone = request.POST.get("phone")
-        address = request.POST.get("address")
-        picture = request.FILES.get("picture")
-
-        # Basic validation (you can extend this)
-        if not email:
-            messages.error(request, "Email is required.")
-        else:
-            # Update user fields manually
-            user.email = email
-            user.first_name = first_name
-            user.last_name = last_name
-            user.gender = gender
-            user.phone = phone
-            user.address = address
-
-            if picture:
-                user.picture = picture
-
-            user.save()
-            messages.success(request, "Your profile has been updated successfully.")
-            return redirect("profile")
-
-    return render(request, "setting/profile_info_change.html")
-
-
-
-@login_required
-def account_settings(request):
     user = request.user
     profile = user.profile  # OneToOne relation: Profile(user=User)
 
@@ -473,69 +437,68 @@ def delete_staff(request, pk):
 @admin_required
 def student_add_view(request):
     if request.method == "POST":
+        # ---------- PERSONAL INFO ----------
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         gender = request.POST.get("gender")
         email = request.POST.get("email")
         address = request.POST.get("address")
         phone = request.POST.get("phone")
-        program_id = request.POST.get("program")
-        level_id = request.POST.get("level")
+        level = request.POST.get("level")          # STRING (Certificate/Diploma)
+        program_id = request.POST.get("program")  # FK
 
-        # Basic validation
+        # ---------- VALIDATION ----------
         if not first_name or not last_name or not email:
             messages.error(request, "First name, last name, and email are required.")
+            return redirect("add_student")
+
+        if not level or not program_id:
+            messages.error(request, "Level and Program are required.")
             return redirect("add_student")
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "A student with this email already exists.")
             return redirect("add_student")
 
-        # Create student
-        student = User(
+        # ---------- CREATE USER ----------
+        user = User.objects.create_user(
             first_name=first_name,
             last_name=last_name,
-            gender=gender,
             email=email,
-            address=address,
+            gender=gender,
             phone=phone,
+            address=address,
             is_student=True,
+            username=email.split("@")[0]  # generate username from email prefix
         )
 
-        # Foreign key relations
-        if program_id:
-            try:
-                student.program = Program.objects.get(pk=program_id)
-            except Program.DoesNotExist:
-                pass
+        # ---------- CREATE STUDENT ----------
+        Student.objects.create(
+            student=user,
+            level=level,            # saved directly (CharField)
+            program_id=program_id   # FK shortcut
+        )
 
-        if level_id:
-            try:
-                student.level = Level.objects.get(pk=level_id)
-            except Level.DoesNotExist:
-                pass
-
-        student.save()
-
-        messages.success(request, f"Student {student.first_name} {student.last_name} added successfully!")
+        messages.success(request, f"Student {user.first_name} {user.last_name} added successfully!")
         return redirect("student_list")
 
-    # GET request → fetch options for dropdowns
-    programs = Program.objects.all()
-    levels = Level.objects.all()
-    return render(request, "accounts/add_student.html", {
+    # ---------- GET REQUEST ----------
+    context = {
         "title": "Add Student",
-        "programs": programs,
-        "levels": levels,
-    })
+        "programs": Program.objects.all(),
+        "levels": LEVEL,   # choices tuple
+    }
+    return render(request, "accounts/add_student.html", context)
 
 
 @login_required
 @admin_required
 def edit_student(request, pk):
-    student = get_object_or_404(User, is_student=True, pk=pk)
+    user = get_object_or_404(User, is_student=True, pk=pk)
+    student = get_object_or_404(Student, student=user)
 
     if request.method == "POST":
+        # ---------- PERSONAL INFO ----------
         email = request.POST.get("email")
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -543,58 +506,47 @@ def edit_student(request, pk):
         phone = request.POST.get("phone")
         address = request.POST.get("address")
         picture = request.FILES.get("picture")
-        program_id = request.POST.get("program")
-        level_id = request.POST.get("level")
+        level = request.POST.get("level")         # STRING from LEVEL choices
+        program_id = request.POST.get("program")  # FK
 
-        # Basic validation
+        # ---------- VALIDATION ----------
         if not first_name or not last_name or not email:
             messages.error(request, "First name, last name, and email are required.")
-            return redirect("update_student", student_id=student.id)
+            return redirect("update_student", student_id=user.id)
 
-        # Prevent duplicate email (except for current student)
-        if User.objects.filter(email=email).exclude(pk=student.id).exists():
+        if User.objects.filter(email=email).exclude(pk=user.id).exists():
             messages.error(request, "Another student with this email already exists.")
-            return redirect("update_student", student_id=student.id)
+            return redirect("update_student", student_id=user.id)
 
-        # Update fields
-        student.email = email
-        student.first_name = first_name
-        student.last_name = last_name
-        student.gender = gender
-        student.phone = phone
-        student.address = address
-
+        # ---------- UPDATE USER ----------
+        user.email = email
+        user.first_name = first_name
+        user.last_name = last_name
+        user.gender = gender
+        user.phone = phone
+        user.address = address
         if picture:
-            student.picture = picture
+            user.picture = picture
+        user.save()
 
-        # Foreign key relations
+        # ---------- UPDATE STUDENT ----------
+        if level:
+            student.level = level
         if program_id:
-            try:
-                student.program = Program.objects.get(pk=program_id)
-            except Program.DoesNotExist:
-                pass
-
-        if level_id:
-            try:
-                student.level = Level.objects.get(pk=level_id)
-            except Level.DoesNotExist:
-                pass
-
+            student.program_id = program_id  # direct FK assignment
         student.save()
 
-        messages.success(request, f"Student {student.first_name} {student.last_name} updated successfully!")
+        messages.success(request, f"Student {user.first_name} {user.last_name} updated successfully!")
         return redirect("student_list")
 
-    # GET request → fetch options for dropdowns
-    programs = Program.objects.all()
-    levels = Level.objects.all()
-    return render(request, "accounts/edit_student.html", {
+    # ---------- GET REQUEST ----------
+    context = {
         "title": "Update Student",
-        "student": student,
-        "programs": programs,
-        "levels": levels,
-    })
-
+        "student": user,
+        "programs": Program.objects.all(),
+        "levels": LEVEL,  # choices tuple
+    }
+    return render(request, "accounts/edit_student.html", context)
 
 @method_decorator([login_required, admin_required], name="dispatch")
 class StudentListView(FilterView):
